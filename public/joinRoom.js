@@ -8,4 +8,20 @@ const joinRoom = roomName => {
 		).innerHTML = `${newNumberofMember} <span class="glyphicon glyphicon-user"></span
         ></span>`
 	})
+	nsSocket.on('historyCatchUp', history => {
+		const messagesUl = document.querySelector('#messages')
+		messagesUl.innerHTML = ''
+		history.forEach(item => {
+			const newMsg = buildHtml(item)
+
+			messagesUl.innerHTML += newMsg
+		})
+		messagesUl.scrollTo(0, messagesUl.scrollHeight)
+	})
+	nsSocket.on('updateMembers', noOfMember => {
+		document.querySelector(
+			'.curr-room-num-users'
+		).innerHTML = `${noOfMember} <span class="glyphicon glyphicon-user"></span
+        ></span>`
+	})
 }

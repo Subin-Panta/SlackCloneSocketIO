@@ -25,8 +25,13 @@ const joinNs = endpoint => {
 	})
 
 	nsSocket.on('messageToAllClients', msg => {
-		console.log(msg)
-		document.querySelector('#messages').innerHTML += `<li>${msg.text}</li>`
+		console.log('event ctached', msg)
+		const newMsg = buildHtml(msg)
+
+		document.querySelector('#messages').innerHTML += newMsg
+		document
+			.querySelector('#messages')
+			.scrollTo(0, document.querySelector('#messages').scrollHeight)
 	})
 	document.querySelector('.message-form').addEventListener('submit', event => {
 		event.preventDefault()
@@ -35,4 +40,17 @@ const joinNs = endpoint => {
 		//emitting this event
 		nsSocket.emit('newMessageToServer', { text: newMessage })
 	})
+}
+const buildHtml = msgObj => {
+	const convertedDate = new Date(msgObj.time).toLocaleTimeString()
+	const newHtml = `<li>
+	<div class="user-image">
+		<img src=${msgObj.avatar} />
+	</div>
+	<div class="user-message">
+		<div class="user-name-time">${msgObj.username} <span>${convertedDate}</span></div>
+		<div class="message-text">${msgObj.text}</div>
+	</div>
+</li>`
+	return newHtml
 }
