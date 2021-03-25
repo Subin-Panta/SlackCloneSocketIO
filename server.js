@@ -54,10 +54,8 @@ namespaces.forEach(namespace => {
 			} catch (error) {
 				console.log(error)
 			}
-			const index = namespaces.filter(
-				item => item.endpoint === namespace.endpoint
-			)
-			const nsRoom = index[0].rooms.find(item => (item.roomTitle = roomName))
+
+			const nsRoom = namespacerooms.find(item => (item.roomTitle = roomName))
 			//emit history everytime someone connects to a room
 			nsSocket.emit('historyCatchUp', nsRoom.history)
 			//send back the number of users in this room to all sockets connected to this room
@@ -90,11 +88,9 @@ namespaces.forEach(namespace => {
 			//this is done for adding history
 			//on New Mesage To Server Event
 			//find the nameSpace we are in, in the nameSpace object
-			const index = namespaces.filter(
-				item => item.endpoint === namespace.endpoint
-			)
+
 			//get the data of specific room in the namespace
-			const nsRoom = index[0].rooms.find(item => (item.roomTitle = roomTitle))
+			const nsRoom = namespace.rooms.find(item => (item.roomTitle = roomTitle))
 			console.log(nsRoom)
 			nsRoom.addMessage(fullMsg)
 			//tara data will be erased as soon as our node server restarts

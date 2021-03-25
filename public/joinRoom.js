@@ -23,5 +23,6 @@ const joinRoom = roomName => {
 			'.curr-room-num-users'
 		).innerHTML = `${noOfMember} <span class="glyphicon glyphicon-user"></span
         ></span>`
+		document.querySelector('.curr-room-text').innerText = `${roomName}`
 	})
 }
