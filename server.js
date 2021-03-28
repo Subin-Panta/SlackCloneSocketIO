@@ -22,6 +22,7 @@ const io = socketio(httpServer, {
 //this is joining a mainNameSpace
 //io.on = io.of('/').on
 io.on('connection', socket => {
+	// console.log(socket.handshake)
 	//Build an array to send back namespaces Info
 	let nsData = namespaces.map(ns => {
 		return {
@@ -38,6 +39,7 @@ io.on('connection', socket => {
 //loop thorugh each nameSpace and listen for a connection
 namespaces.forEach(namespace => {
 	io.of(namespace.endpoint).on('connection', nsSocket => {
+		const username = nsSocket.handshake.query.username
 		console.log(`${nsSocket.id} has joined ${namespace.endpoint}`)
 		//a socket has joined one of the nameSpaces
 		//send the information of that particcular NameSpace
@@ -68,7 +70,7 @@ namespaces.forEach(namespace => {
 			const fullMsg = {
 				text: msg.text,
 				time: Date.now(),
-				username: 'SUbin',
+				username,
 				avatar: 'https://via.placeholder.com/30'
 			}
 			//send to all sockets in the room that this socket is connected to
