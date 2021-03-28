@@ -15,7 +15,8 @@ socket.on('nsList', nsData => {
 		//Add event listener for each element
 		element.addEventListener('click', e => {
 			const nsEndpoint = element.getAttribute('ns')
-			console.log(nsEndpoint)
+
+			joinNs(nsEndpoint)
 		})
 	})
 	joinNs('/wiki')

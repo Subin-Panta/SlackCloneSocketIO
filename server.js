@@ -42,35 +42,27 @@ namespaces.forEach(namespace => {
 		//a socket has joined one of the nameSpaces
 		//send the information of that particcular NameSpace
 		nsSocket.emit('nsRoomLoad', namespace.rooms)
+		//	console.log('rooms', namespace.rooms)
 		nsSocket.on('joinRoom', async (roomName, numberofUsersCallBack) => {
-			nsSocket.join(roomName)
-			try {
-				const allSockets = await io
-					.of(namespace.endpoint)
-					.in(roomName)
-					.allSockets()
-
-				numberofUsersCallBack(allSockets.size)
-			} catch (error) {
-				console.log(error)
+			//whenever someone joins the room leave the previous room
+			const roomTitle = Array.from(nsSocket.rooms)[1]
+			//	console.log('Room to leave', roomTitle)
+			//	console.log('before Leaving', nsSocket.rooms)
+			if (roomTitle) {
+				nsSocket.leave(roomTitle)
+				//	console.log('after Leaving', nsSocket.rooms)
+				//after leaving update the user Count
+				updateUSerNumber(namespace.endpoint, roomTitle)
 			}
-
-			const nsRoom = namespacerooms.find(item => (item.roomTitle = roomName))
+			nsSocket.leave(roomTitle)
+			//after leaving the room update the count of the room that has been left
+			nsSocket.join(roomName)
+			const nsRoom = namespace.rooms.find(item => item.roomTitle === roomName)
 			//emit history everytime someone connects to a room
+
 			nsSocket.emit('historyCatchUp', nsRoom.history)
 			//send back the number of users in this room to all sockets connected to this room
-			try {
-				const allSockets2 = await io
-					.of(namespace.endpoint)
-					.in(roomName)
-					.allSockets()
-
-				io.of(namespace.endpoint)
-					.in(roomName)
-					.emit('updateMembers', allSockets2.size)
-			} catch (error) {
-				console.log(error)
-			}
+			updateUSerNumber(namespace.endpoint, roomName)
 		})
 		nsSocket.on('newMessageToServer', msg => {
 			const fullMsg = {
@@ -88,11 +80,14 @@ namespaces.forEach(namespace => {
 			//this is done for adding history
 			//on New Mesage To Server Event
 			//find the nameSpace we are in, in the nameSpace object
-
 			//get the data of specific room in the namespace
-			const nsRoom = namespace.rooms.find(item => (item.roomTitle = roomTitle))
-			console.log(nsRoom)
+
+			const nsRoom = namespace.rooms.find(item => item.roomTitle === roomTitle)
+			//	console.log('This is currenlty the room we are on', nsRoom)
 			nsRoom.addMessage(fullMsg)
+			console.log('History has been added to', namespace.rooms)
+			// console.log('History added', nsRoom)
+			//console.log(roomTitle)
 			//tara data will be erased as soon as our node server restarts
 			io.of(namespace.endpoint)
 				.to(roomTitle)
@@ -100,3 +95,11 @@ namespaces.forEach(namespace => {
 		})
 	})
 })
+const updateUSerNumber = async (endpoint, roomName) => {
+	try {
+		const allSockets2 = await io.of(endpoint).in(roomName).allSockets()
+		io.of(endpoint).in(roomName).emit('updateMembers', allSockets2.size)
+	} catch (error) {
+		console.log(error)
+	}
+}
