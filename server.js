@@ -1,14 +1,20 @@
 const express = require('express')
 const app = express()
 const socketio = require('socket.io')
-
+const port = process.env.PORT || 9000
+const path = require('path')
+const publicPath = path.join(__dirname, 'public')
 let namespaces = require('./data/namespaces')
 // console.log(namespaces[0])
 
 //staticalyy serving public folder
-app.use(express.static(__dirname + '/public'))
+app.use(express.static(publicPath))
+//serving chat.html for all get requests
+app.get('*', (req, res) => {
+	res.sendFile(path.join(publicPath, 'chat.html'))
+})
 //creation of http server
-const httpServer = app.listen(9000)
+const httpServer = app.listen(port)
 //creating socket server
 const io = socketio(httpServer, {
 	path: '/socket.io',
