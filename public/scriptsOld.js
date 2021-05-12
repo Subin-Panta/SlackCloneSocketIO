@@ -1,5 +1,5 @@
-const socket = io('http://localhost:9000')
-const socket2 = io('http://localhost:9000/admin')
+const socket = io('https://sheltered-earth-07960.herokuapp.com/')
+const socket2 = io('https://sheltered-earth-07960.herokuapp.com//admin')
 //listening to messagefromserver event
 socket.on('dataFromServer', dataFromServer => {
 	console.log(dataFromServer)

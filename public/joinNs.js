@@ -8,7 +8,7 @@ const joinNs = endpoint => {
 			.removeEventListener('submit', formSubmission)
 	}
 	//automatically joins the wikipedia namespace at the start of the web application
-	nsSocket = io(`http://localhost:9000${endpoint}`)
+	nsSocket = io(`https://sheltered-earth-07960.herokuapp.com${endpoint}`)
 	//Listen for event that sends back the nsData
 	nsSocket.on('nsRoomLoad', nsRooms => {
 		console.log(nsRooms)

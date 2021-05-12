@@ -1,10 +1,11 @@
 const username = prompt('What is your username?')
 // const socket = io('http://localhost:9000') //Main NameSpace
-const socket = io('http://localhost:9000', {
+const socket = io('https://sheltered-earth-07960.herokuapp.com/', {
 	query: {
 		username
 	}
 }) //Main NameSpace
+
 let nsSocket = ''
 //Listening for nslist Event
 socket.on('nsList', nsData => {
